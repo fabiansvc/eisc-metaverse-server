@@ -1,6 +1,5 @@
 'use strict';
 
-const { log } = require("console");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
@@ -21,9 +20,9 @@ io.on("connection", (socket) => {
   socket.emit("avatars", avatars);
 
   socket.on("client-send-avatar", (avatar) => {
+
     // Update the avatars array if the avatar is already in it
     const index = avatars.findIndex((a) => a.avatarUrl === avatar.avatarUrl);
-    log(index);
     if (index !== -1) {
       avatars[index] = avatar;
     } else {
