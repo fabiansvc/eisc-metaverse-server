@@ -11,14 +11,13 @@ const io = new Server(httpServer, {
 });
 
 var avatars = [];
-
 // server-side
 io.on("connection", (socket) => {
   socket.on("client-send-avatar", async (avatar) => {
     const index = avatars.findIndex((a) => a.nickname === avatar.nickname);
     if (index !== -1) {
       avatars[index] = avatar;
-    } else {
+    } else if (avatar.avatarUrl !== "") {
       avatars.push(avatar);
     }
 
