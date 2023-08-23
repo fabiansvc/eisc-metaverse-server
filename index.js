@@ -1,13 +1,13 @@
 "use strict";
 
 const { createServer } = require("http");
-const { Server } = require("socket.io");
 
 const httpServer = createServer();
-const io = new Server(httpServer, {
+const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "http://localhost:3000", // Replace with your client's URL
-  },
+    origin: "https://eisc-metaverse.vercel.app",
+    methods: ["GET", "POST"]
+  }
 });
 
 var avatars = [];
