@@ -4,7 +4,7 @@
   "description": "EISC Metaverse server",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "node src/index.js"
   },
   "keywords": [
     "server",
