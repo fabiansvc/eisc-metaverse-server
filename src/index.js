@@ -5,7 +5,7 @@ const { createServer } = require("http");
 const httpServer = createServer();
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "https://eisc-metaverse.vercel.app",
+    origin: "https://eisc-metaverse.vercel.app/metaverse",
     methods: ["GET", "POST"]
   }
 });
@@ -26,8 +26,8 @@ io.on("connection", (socket) => {
   });
 });
 
-
 const PORT = 5000;
+
 httpServer.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
