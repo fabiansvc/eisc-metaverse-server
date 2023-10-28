@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "EISC Metaverse server",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "node src/index.js"
+    "dev": "node src/index.mjs"
   },
   "keywords": [
     "server",
@@ -14,8 +15,5 @@
   "license": "ISC",
   "dependencies": {
     "socket.io": "^4.7.2"
-  },
-  "engines": {
-    "node": "14.17.0"
   }
 }
