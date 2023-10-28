@@ -10,6 +10,10 @@ const io = require("socket.io")(httpServer, {
   },
 });
 
+// Set the CORS headers on the HTTP server
+httpServer.setHeader("Access-Control-Allow-Origin", "https://eisc-metaverse.vercel.app");
+httpServer.setHeader("Access-Control-Allow-Methods", "GET, POST");
+
 var avatars = [];
 
 // server-side
@@ -24,10 +28,6 @@ io.on("connection", (socket) => {
 
     // Emit the avatars to all clients
     await io.emit("server-send-avatars", avatars);
-
-    // Agregar el siguiente código
-    socket.setHeader("Access-Control-Allow-Origin", "https://eisc-metaverse.vercel.app");
-    socket.setHeader("Access-Control-Allow-Methods", "GET, POST");
   });
 });
 
