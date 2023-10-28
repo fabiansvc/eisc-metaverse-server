@@ -1,21 +1,15 @@
-"use strict";
 
-const { createServer } = require("http");
+import { createServer } from "http";
+import { Server } from "socket.io";
+
 const httpServer = createServer();
-
-const io = require("socket.io")(httpServer, {
+const io = new Server(httpServer, {
   cors: {
-    origin: "https://eisc-metaverse.vercel.app",
-    methods: ["GET", "POST"],
-  },
+    origin: "https://eisc-metaverse.vercel.app"
+  }
 });
 
-// Set the CORS headers on the HTTP server
-httpServer.setHeader("Access-Control-Allow-Origin", "https://eisc-metaverse.vercel.app");
-httpServer.setHeader("Access-Control-Allow-Methods", "GET, POST");
-
 var avatars = [];
-
 // server-side
 io.on("connection", (socket) => {
   socket.on("client-send-avatar", async (avatar) => {
