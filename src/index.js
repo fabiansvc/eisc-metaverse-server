@@ -5,7 +5,7 @@ const { createServer } = require("http");
 const httpServer = createServer();
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "https://eisc-metaverse.vercel.app/",
+    origin: "https://eisc-metaverse.vercel.app",
     methods: ["GET", "POST"]
   }
 });
