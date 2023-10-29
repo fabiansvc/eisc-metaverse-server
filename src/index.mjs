@@ -5,7 +5,9 @@ import { Server } from "socket.io";
 const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
-    origin: "https://eisc-metaverse.vercel.app"
+    origin: "https://eisc-metaverse.vercel.app",
+    allowedHeaders: ["eisc-metaverse-header"],
+    credentials: true
   }
 });
 
