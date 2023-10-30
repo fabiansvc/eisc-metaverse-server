@@ -1,11 +1,10 @@
 {
   "name": "eisc-metaverse-server",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "EISC Metaverse server",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "dev": "node src/index.mjs"
+    "dev": "node src/index.js"
   },
   "keywords": [
     "server",
@@ -14,6 +13,11 @@
   "author": "Fabian Stiven Valencia Cordoba",
   "license": "ISC",
   "dependencies": {
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.33.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^5.0.10"
   }
 }

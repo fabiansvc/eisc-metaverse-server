@@ -1,18 +1,17 @@
+const { App } = require("uWebSockets.js");
+const { Server } = require("socket.io");
 
-import { createServer } from "http";
-import { Server } from "socket.io";
-
-const httpServer = createServer();
-const io = new Server(httpServer, {
+const app = App();
+const io = new Server({
   cors: {
-    origin: "*",
-    allowedHeaders: ["eisc-metaverse-header"],
-    credentials: true
+    origin: ["http://localhost:3000", "https://eisc-metaverse.vercel.app"]
   }
 });
 
+io.attachApp(app);
+
 var avatars = [];
-// server-side
+
 io.on("connection", (socket) => {
   socket.on("client-send-avatar", async (avatar) => {
     const index = avatars.findIndex((a) => a.nickname === avatar.nickname);
@@ -27,8 +26,9 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = 5000;
 
-httpServer.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+app.listen(5000, (token) => {
+  if (!token) {
+    console.warn("port already in use");
+  }
 });
