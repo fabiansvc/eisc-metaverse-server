@@ -1,31 +1,41 @@
 const { App } = require("uWebSockets.js");
 const { Server } = require("socket.io");
-
 const app = App();
 const io = new Server({
   cors: {
     origin: ["http://localhost:3000", "https://eisc-metaverse.vercel.app"]
   }
 });
-
 io.attachApp(app);
+let allAvatars = [];
 
-var avatars = [];
+// Emit the avatars connected to all clients
+const emitAllAvatars = async (allAvatars) => {
+  console.log("Emitting all avatars", allAvatars);
+  io.emit("avatars-connected", allAvatars);
+};
 
 io.on("connection", (socket) => {
-  socket.on("client-send-avatar", async (avatar) => {
-    const index = avatars.findIndex((a) => a.nickname === avatar.nickname);
-    if (index !== -1) {
-      avatars[index] = avatar;
-    } else if (avatar.avatarUrl !== "") {
-      avatars.push(avatar);
-    }
+  socket.on("connect-avatar", async (avatar) => {
+    // Check if the avatar already exists in the allAvatars array
+    const existingAvatar = allAvatars.find((a) => a.nickname === avatar.nickname);
 
-    // Emit the avatars to all clients
-    await io.emit("server-send-avatars", avatars);
+    // If the avatar doesn't exist, create a new one
+    if (!existingAvatar && avatar.avatarUrl !== "") {
+      allAvatars.push(avatar);
+    }
+    // Emit the updated list of avatars connected to all clients
+    emitAllAvatars(allAvatars);
+  });
+
+  socket.on("disconnect-avatar", async (nickname) => {
+    // Remove the avatar from the allAvatars array if no other clients are connected to it
+    allAvatars = allAvatars.filter((avatar) => avatar.nickname !== nickname);
+
+    // Emit the updated list of avatars connected to all clients
+    emitAllAvatars(allAvatars);
   });
 });
-
 
 app.listen(5000, (token) => {
   if (!token) {
