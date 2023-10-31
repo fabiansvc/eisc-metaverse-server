@@ -1,6 +1,6 @@
 {
   "name": "eisc-metaverse-server",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "EISC Metaverse server",
   "main": "index.js",
   "scripts": {
