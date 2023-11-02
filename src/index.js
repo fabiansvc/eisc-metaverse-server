@@ -1,58 +1,49 @@
-const { App } = require("uWebSockets.js");
-const { Server } = require("socket.io");
-const app = App();
+import { Server } from "socket.io";
 
 const io = new Server({
   cors: {
     origin: ["http://localhost:3000", "https://eisc-metaverse.vercel.app"]
-  }
+  },
 });
-io.attachApp(app);
 
-let allAvatars = [];
+io.listen(3001);
 
-// Emit the avatars connected to all clients
-const emitAllAvatars = (allAvatars) => {
-  io.emit("avatars-connected", allAvatars);
-};
+const avatars = []
 
 io.on("connection", (socket) => {
-  socket.on("connect-avatar", (avatar) => {
-    // Check if the avatar already exists in the allAvatars array
-    const existingAvatar = allAvatars.find((a) => a.nickname === avatar.nickname);
+  console.log("user connected");
 
-    // If the avatar doesn't exist, create a new one
-    if (!existingAvatar && avatar.avatarUrl !== "") {
-      allAvatars.push(avatar);
-    }
-    // Emit the updated list of avatars connected to all clients
-    emitAllAvatars(allAvatars);
+  avatars.push({
+    id: socket.id,
+    position: [0, 0, 0],
+    rotation: [0, 0, 0],
+    url: ""
+  })
+
+  io.emit("avatars", avatars)
+
+  socket.on("url", (url) => {
+    const avatar = avatars.find(avatar => avatar.id === socket.id)
+    avatar.url = url
+    io.emit("avatars", avatars)
   });
 
-  socket.on("disconnect-avatar", (nickname) => {
-    // Remove the avatar from the allAvatars array if no other clients are connected to it
-    allAvatars = allAvatars.filter((avatar) => avatar.nickname !== nickname);
-
-    // Emit the updated list of avatars connected to all clients
-    emitAllAvatars(allAvatars);
+  socket.on("move", (values) => {
+    const avatar = avatars.find(avatar => avatar.id === socket.id)
+    avatar.position = values.position
+    avatar.rotation = values.rotation
+    io.emit("avatars", avatars)
   });
 
-  socket.on("update-avatar", (avatar) => {
-    // Update the avatar in the allAvatars array
-    allAvatars = allAvatars.map((a) => {
-      if (a.nickname === avatar.nickname) {
-        return avatar;
-      }
-      return a;
-    });
-
-    // Emit the updated list of avatars connected to all clients
-    emitAllAvatars(allAvatars);
+  socket.on("animation", (animation)=>{
+    const avatar = avatars.find(avatar => avatar.id === socket.id)
+    avatar.animation = animation
+    io.emit("avatars", avatars)
+  })
+  
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    avatars.splice(avatars.findIndex(avatar => avatar.id === socket.id), 1)
+    io.emit("avatars", avatars)
   });
-});
-
-app.listen(5000, (token) => {
-  if (!token) {
-    console.warn("port already in use");
-  }
 });
