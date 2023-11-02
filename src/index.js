@@ -34,6 +34,12 @@ io.on("connection", (socket) => {
     avatar.rotation = values.rotation
     io.emit("avatars", avatars)
   });
+
+  socket.on("animation", (animation)=>{
+    const avatar = avatars.find(avatar => avatar.id === socket.id)
+    avatar.animation = animation
+    io.emit("avatars", avatars)
+  })
   
   socket.on("disconnect", () => {
     console.log("user disconnected");
