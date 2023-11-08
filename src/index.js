@@ -12,15 +12,21 @@ const avatars = []
 
 io.on("connection", (socket) => {
   console.log("user connected");
-
   avatars.push({
     id: socket.id,
     position: [0, 0, 0],
     rotation: [0, 0, 0],
     url: ""
   })
-
   io.emit("avatars", avatars)
+
+  socket.on("callUser", (data) => {
+    io.emit("hey", { signal: data.signalData })
+  })
+
+  socket.on("acceptCall", (data) => {
+    io.emit("callAccepted", data.signal)
+  })
 
   socket.on("url", (url) => {
     const avatar = avatars.find(avatar => avatar.id === socket.id)
@@ -35,12 +41,12 @@ io.on("connection", (socket) => {
     io.emit("avatars", avatars)
   });
 
-  socket.on("animation", (animation)=>{
+  socket.on("animation", (animation) => {
     const avatar = avatars.find(avatar => avatar.id === socket.id)
     avatar.animation = animation
     io.emit("avatars", avatars)
   })
-  
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
     avatars.splice(avatars.findIndex(avatar => avatar.id === socket.id), 1)
