@@ -9,6 +9,7 @@ const io = new Server({
 io.listen(3001);
 
 const avatars = []
+const messages = []
 
 io.on("connection", (socket) => {
   console.log("user connected");
@@ -19,14 +20,6 @@ io.on("connection", (socket) => {
     url: ""
   })
   io.emit("avatars", avatars)
-
-  socket.on("callUser", (data) => {
-    io.emit("hey", { signal: data.signalData })
-  })
-
-  socket.on("acceptCall", (data) => {
-    io.emit("callAccepted", data.signal)
-  })
 
   socket.on("url", (url) => {
     const avatar = avatars.find(avatar => avatar.id === socket.id)
@@ -47,8 +40,18 @@ io.on("connection", (socket) => {
     io.emit("avatars", avatars)
   })
 
+  socket.on("message", (message) => {
+    messages.push(message)
+    io.emit("messages", messages)
+  })
+
+  socket.on('call', (data) => {
+    console.log('Llamada iniciada por: ' + socket.id);
+    socket.broadcast.emit('call-broadcast', {signal: data.signalData});
+  });
+  
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log('Usuario desconectado: ' + socket.id);
     avatars.splice(avatars.findIndex(avatar => avatar.id === socket.id), 1)
     io.emit("avatars", avatars)
   });
