@@ -9,16 +9,20 @@ const io = new Server({
 io.listen(3001);
 
 const avatars = []
-const messages = []
 
 io.on("connection", (socket) => {
-  console.log("user connected");
-  avatars.push({
-    id: socket.id,
-    position: [0, 0, 0],
-    rotation: [0, 0, 0],
-    url: ""
-  })
+  const newAvatar = avatars.find(avatar => avatar.id === socket.id)
+
+  if (!newAvatar) {
+    console.log("user connected");
+    avatars.push({
+      id: socket.id,
+      position: [0, 0, 0],
+      rotation: [0, 0, 0],
+      url: ""
+    })
+  }
+
   io.emit("avatars", avatars)
 
   socket.on("url", (url) => {
@@ -41,15 +45,23 @@ io.on("connection", (socket) => {
   })
 
   socket.on("message", (message) => {
-    messages.push(message)
-    io.emit("messages", messages)
+    io.emit("newMessage", message)
   })
 
   socket.on('call', (data) => {
     console.log('Llamada iniciada por: ' + socket.id);
-    socket.broadcast.emit('call-broadcast', {signal: data.signalData});
+    socket.broadcast.emit('call-broadcast', { signal: data.signalData });
   });
-  
+
+  socket.on("avatarEditing", ()=>{
+    const avatar = avatars.find(avatar => avatar.id === socket.id)
+    avatar.position = [0, 0, 0]
+    avatar.rotation = [0, 0, 0]
+    avatar.url = ""
+    avatar.animation = ""
+    io.emit("avatars", avatars)
+  })
+
   socket.on("disconnect", () => {
     console.log('Usuario desconectado: ' + socket.id);
     avatars.splice(avatars.findIndex(avatar => avatar.id === socket.id), 1)
