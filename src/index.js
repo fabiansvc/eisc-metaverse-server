@@ -28,7 +28,6 @@ io.on("connection", (socket) => {
   io.emit("avatars", avatars)
 
   socket.on("data-user", (valuesUser) => {
-    
     const avatar = avatars.find(avatar => avatar.id === socket.id)
     avatar.email = valuesUser.email
     avatar.nickname = valuesUser.nickname
@@ -49,11 +48,17 @@ io.on("connection", (socket) => {
     io.emit("avatars", avatars)
   })
 
+  socket.on("message", (message) => {
+    io.emit("newMessage", message)
+  })
+
   socket.on("avatarEditing", ()=>{
     const avatar = avatars.find(avatar => avatar.id === socket.id)
     avatar.position = [0, 0, 0]
     avatar.rotation = [0, 0, 0]
-    avatar.url = ""
+    avatar.email = ""
+    avatar.nickname = ""
+    avatar.avatarUrl = ""
     avatar.animation = ""
     io.emit("avatars", avatars)
   })
