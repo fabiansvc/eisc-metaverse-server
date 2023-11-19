@@ -19,15 +19,20 @@ io.on("connection", (socket) => {
       id: socket.id,
       position: [0, 0, 0],
       rotation: [0, 0, 0],
-      url: ""
+      email: "",
+      nickname: "",
+      avatarUrl: ""
     })
   }
 
   io.emit("avatars", avatars)
 
-  socket.on("url", (url) => {
+  socket.on("data-user", (valuesUser) => {
+    
     const avatar = avatars.find(avatar => avatar.id === socket.id)
-    avatar.url = url
+    avatar.email = valuesUser.email
+    avatar.nickname = valuesUser.nickname
+    avatar.avatarUrl = valuesUser.avatarUrl
     io.emit("avatars", avatars)
   });
 
@@ -43,15 +48,6 @@ io.on("connection", (socket) => {
     avatar.animation = animation
     io.emit("avatars", avatars)
   })
-
-  socket.on("message", (message) => {
-    io.emit("newMessage", message)
-  })
-
-  socket.on('call', (data) => {
-    console.log('Llamada iniciada por: ' + socket.id);
-    socket.broadcast.emit('call-broadcast', { signal: data.signalData });
-  });
 
   socket.on("avatarEditing", ()=>{
     const avatar = avatars.find(avatar => avatar.id === socket.id)
