@@ -1,0 +1,42 @@
+config:
+  target: "https://eisc-metaverse-server.onrender.com"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      rampTo: 5
+      name: Warm up phase
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 10
+      name: Ramp up load
+    - duration: 30
+      arrivalRate: 10
+      rampTo: 30
+      name: Spike phase
+scenarios:
+  - engine: "socketio"
+    flow:
+      - emit:
+          channel: "data-user"
+          data:
+            email: "example@example.com"
+            nickname: "testUser"
+            avatarUrl: "http://example.com/avatar.png"
+      - think: 1
+      - emit:
+          channel: "move"
+          data:
+            position: [1, 2, 3]
+            rotation: [0, 0, 0]
+      - think: 1
+      - emit:
+          channel: "animation"
+          data: "some_animation"
+      - think: 1
+      - emit:
+          channel: "message"
+          data: "Hello World"
+      - think: 1
+      - emit:
+          channel: "avatarEditing"
+      - think: 1
