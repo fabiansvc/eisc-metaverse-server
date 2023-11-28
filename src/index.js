@@ -64,6 +64,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     avatars.splice(avatars.findIndex(avatar => avatar.id === socket.id), 1)
     io.emit("avatars", avatars)
-    console.log("Avatar with ID", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
+    console.log("Avatar disconnected with ID", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
   });
 });
