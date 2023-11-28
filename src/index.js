@@ -11,24 +11,19 @@ io.listen(3001);
 const avatars = []
 
 io.on("connection", (socket) => {
-  console.log(
-    "Avatar joined with ID",
-    socket.id,
-    ". There are " +
-    io.engine.clientsCount +
-    " avatars connected."
-  );
 
-  avatars.push({
-    id: socket.id,
-    position: [0, 0, 0],
-    rotation: [0, 0, 0],
-    email: "",
-    nickname: "",
-    avatarUrl: "",
-  })
-
-  io.emit("avatars", avatars)
+  if (!avatars[socket.id]) {
+    avatars.push({
+      id: socket.id,
+      position: [0, 0, 0],
+      rotation: [0, 0, 0],
+      email: "",
+      nickname: "",
+      avatarUrl: "",
+    })
+    console.log("Avatar joined with ID", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
+    io.emit("avatars", avatars)
+  }
 
   socket.on("data-user", (valuesUser) => {
     const avatar = avatars.find(avatar => avatar.id === socket.id)
@@ -51,10 +46,6 @@ io.on("connection", (socket) => {
     io.emit("avatars", avatars)
   })
 
-  socket.on("message", (message) => {
-    io.emit("newMessage", message)
-  })
-
   socket.on("avatarEditing", () => {
     const avatar = avatars.find(avatar => avatar.id === socket.id)
     avatar.position = [0, 0, 0]
@@ -66,9 +57,13 @@ io.on("connection", (socket) => {
     io.emit("avatars", avatars)
   })
 
+  socket.on("message", (message) => {
+    io.emit("newMessage", message)
+  })
+
   socket.on("disconnect", () => {
-    console.log('User disconnect wirh id: ' + socket.id);
     avatars.splice(avatars.findIndex(avatar => avatar.id === socket.id), 1)
     io.emit("avatars", avatars)
+    console.log("Avatar with ID", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
   });
 });
