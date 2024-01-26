@@ -1,11 +1,11 @@
 {
   "name": "eisc-metaverse-server",
-  "version": "1.0.3",
+  "version": "1.1",
   "description": "EISC Metaverse server",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon --env-file=.env src/index.js"
   },
   "keywords": [
     "server",
