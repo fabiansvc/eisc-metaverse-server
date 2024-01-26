@@ -1,5 +1,5 @@
 config:
-  target: "https://eisc-metaverse-server.onrender.com"
+  target: <%= process.env.SERVER_WEB_SOCKETS_URL %>
   phases:
     - duration: 60
       arrivalRate: 1

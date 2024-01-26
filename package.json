@@ -14,6 +14,8 @@
   "author": "Fabian Stiven Valencia Cordoba",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.1",
+    "ejs": "^3.1.9",
     "socket.io": "^4.7.2"
   },
   "optionalDependencies": {
