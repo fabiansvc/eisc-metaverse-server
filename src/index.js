@@ -9,8 +9,8 @@ import SocketServer from "./SocketServer.js";
 /**
  * Load environment variables from .env file.
  */
-const clientURLLocalhost = process.env.CLIENT_URL_LOCALHOST;
-const clientURLDeploy = process.env.CLIENT_URL_DEPLOY;
+const clientURLLocalhost = "http://localhost:3000";
+const clientURLDeploy = "https://eisc-metaverse.vercel.app";
 const port = process.env.PORT;
 
 /**
