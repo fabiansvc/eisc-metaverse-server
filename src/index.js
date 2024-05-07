@@ -1,17 +1,26 @@
-import { Server } from "socket.io";
+"use strict";
 
-const apiUrl = process.env.SERVER_URL
-const port = process.env.PORT
+/**
+ * Module dependencies.
+ */
 
-const io = new Server({
-  cors: {
-    origin: [apiUrl]
-  },
-});
+import SocketServer from "./SocketServer.js";
 
-io.listen(port);
+/**
+ * Load environment variables from .env file.
+ */
+const clientURLLocalhost = "http://localhost:3000";
+const clientURLDeploy = "https://eisc-metaverse.vercel.app";
+const port = process.env.PORT;
 
-const avatars = []
+/**
+ * Create and start the WebSocket server.
+ */
+const socketServer = new SocketServer(
+  port,
+  clientURLLocalhost,
+  clientURLDeploy
+);
 
 io.on("connection", (socket) => {
   if (!avatars[socket.id]) {

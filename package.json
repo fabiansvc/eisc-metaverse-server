@@ -2,10 +2,10 @@
   "name": "eisc-metaverse-server",
   "version": "1.1.0",
   "description": "EISC Metaverse server",
-  "main": "index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --env-file=.env src/index.js"
+    "dev": "node src/index.js"
   },
   "keywords": [
     "server",
@@ -14,16 +14,14 @@
   "author": "Fabian Stiven Valencia Cordoba",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.1",
-    "ejs": "^3.1.9",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.5"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8",
     "utf-8-validate": "^5.0.10"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=20.12.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
