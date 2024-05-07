@@ -14,7 +14,6 @@ io.listen(port);
 const avatars = []
 
 io.on("connection", (socket) => {
-
   if (!avatars[socket.id]) {
     avatars.push({
       id: socket.id,
@@ -24,7 +23,7 @@ io.on("connection", (socket) => {
       nickname: "",
       avatarUrl: "",
     })
-    console.log("Avatar joined with ID", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
+    console.log("Avatar joined with ID ", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
     io.emit("avatars", avatars)
   }
 
@@ -67,6 +66,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     avatars.splice(avatars.findIndex(avatar => avatar.id === socket.id), 1)
     io.emit("avatars", avatars)
-    console.log("Avatar disconnected with ID", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
+    console.log("Avatar disconnected with ID ", socket.id,". There are " + io.engine.clientsCount + " avatars connected.");
   });
 });
