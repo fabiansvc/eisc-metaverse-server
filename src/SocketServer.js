@@ -44,12 +44,10 @@ export default class SocketServer {
   handleConnections() {
     this.io.on("connection", (socket) => {
       this.handleNewConnection(socket);
-      this.handleAvatarConnected(socket);
-      this.handleMove(socket);
-      this.handleAnimation(socket);
-      this.handleAvatarUpdated(socket);
+      this.handleUpdateAvatar(socket);
       this.handleMessages(socket);
       this.handleDisconnect(socket);
+      this.handleUpgradeAvatar(socket);
     });
   }
 
@@ -59,63 +57,37 @@ export default class SocketServer {
    */
   handleNewConnection(socket) {
     if (
-      !this.avatarManager.getAvatars().some((avatar) => avatar.id === socket.id)
+      !this.avatarManager.readAvatars().some((avatar) => avatar.id === socket.id)
     ) {
-      console.log("New avatar connected with ID " + socket.id + ".");
-      const newAvatar = new Avatar(socket.id, [0, 0, 0], [0, 0, 0], "", "", "");
-      this.avatarManager.addAvatar(newAvatar);
-      this.sendAvatarsConnected(socket);
+      console.log(
+        "New avatar connected with ID " +
+          socket.id +
+          ". There are " +
+          this.io.engine.clientsCount +
+          " avatars connected"
+      );
+      const newAvatar = new Avatar(
+        socket.id,
+        [0, 0, 0],
+        [0, 0, 0],
+        "",
+        "",
+        ""
+      );
+      this.avatarManager.createAvatar(newAvatar);
     }
-  }
-
-  /**
-   * Handle data from the user.
-   * @param {SocketIO.Socket} socket The socket of the user.
-   */
-  handleAvatarConnected(socket) {
-    socket.on("avatar-connected", (valuesUser) => {
-      this.avatarManager.updateAvatar(socket.id, valuesUser);
-      socket.broadcast.emit("avatars", this.avatarManager.getAvatars());
-    });
-  }
-
-  /**
-   * Handle avatar movement.
-   * @param {SocketIO.Socket} socket The socket of the avatar.
-   */
-  handleMove(socket) {
-    socket.on("move", (values) => {
-      this.avatarManager.updateAvatar(socket.id, values);
-      this.sendAvatarsConnected(socket);
-    });
-  }
-
-  /**
-   * Handle avatar animation.
-   * @param {SocketIO.Socket} socket The socket of the avatar.
-   */
-  handleAnimation(socket) {
-    socket.on("animation", (animation) => {
-      this.avatarManager.updateAvatar(socket.id, { animation });
-      this.sendAvatarsConnected(socket);
-    });
   }
 
   /**
    * Handle avatar editing.
    * @param {SocketIO.Socket} socket The socket of the avatar.
    */
-  handleAvatarUpdated(socket) {
-    socket.on("avatar-updated", () => {
-      this.avatarManager.updateAvatar(socket.id, {
-        position: [0, 0, 0],
-        rotation: [0, 0, 0],
-        email: "",
-        nickname: "",
-        avatarUrl: "",
-        animation: "",
-      });
-      this.sendAvatarsConnected(socket);
+  handleUpdateAvatar(socket) {
+    socket.on("update-avatar", (newData) => {
+      const res = this.avatarManager.updateAvatar(socket.id, newData);
+      res
+        ? this.sendAvatarsConnected()
+        : console.log("Avatar with " + socket.id + " not found!");
     });
   }
 
@@ -139,13 +111,20 @@ export default class SocketServer {
       console.log(
         `Avatar disconnected with ID ${socket.id}. There are ${this.io.engine.clientsCount} avatars connected.`
       );
-      this.sendAvatarsConnected(socket);
+      this.sendAvatarsConnected();
     });
   }
 
-  sendAvatarsConnected(socket) {
-    if (this.avatarManager.getAvatars().length > 0) {
-      socket.emit("avatars", this.avatarManager.getAvatars());
+  handleUpgradeAvatar(socket){
+    socket.on("upgrade-avatar", (newUpgradeData) => {
+      this.avatarManager.upgradeAvatar(socket.id, newUpgradeData);
+      this.sendAvatarsConnected()
+    });
+  }
+
+  sendAvatarsConnected() {
+    if (this.avatarManager.readAvatars().length > 0) {
+      this.io.emit("avatars", this.avatarManager.readAvatars());
     }
   }
 }

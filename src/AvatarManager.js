@@ -12,11 +12,34 @@ export default class AvatarManager {
   }
 
   /**
-   * Add an avatar to the manager.
+   * Create an avatar to the manager.
    * @param {Object} avatar The avatar object to add.
    */
-  addAvatar(avatar) {
+  createAvatar(avatar) {
     this.avatars.push(avatar);
+  }
+
+  /**
+   * Read the list of avatars managed by the manager.
+   * @returns {Array} The list of avatars.
+   */
+  readAvatars() {
+    return this.avatars;
+  }
+
+  /**
+   * Update an avatar's data.
+   * @param {string} id The ID of the avatar to update.
+   * @param {Object} newData The new data to update the avatar with.
+   */
+  updateAvatar(id, newData) {
+    let avatar = this.avatars.find((avatar) => avatar.id === id);
+    if (avatar) {
+      avatar = newData;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -28,20 +51,13 @@ export default class AvatarManager {
   }
 
   /**
-   * Update an avatar's data.
-   * @param {string} id The ID of the avatar to update.
-   * @param {Object} newData The new data to update the avatar with.
+   * Upgrade an avatar's data with new properties.
+   * @param {string} id The ID of the avatar to upgrade.
+   * @param {Object} upgradeData The new properties to add or update.
+   * @returns {boolean} True if the upgrade was successful, false otherwise.
    */
-  updateAvatar(id, newData) {
-    const avatar = this.avatars.find((avatar) => avatar.id === id);
-    avatar ? Object.assign(avatar, newData) : console.log("Avatar not found!");
-  }
-
-  /**
-   * Get the list of avatars managed by the manager.
-   * @returns {Array} The list of avatars.
-   */
-  getAvatars() {
-    return this.avatars;
+  upgradeAvatar(id, newUpgradeData) {
+    let avatar = this.avatars.find((avatar) => avatar.id === id);
+    Object.assign(avatar, newUpgradeData); // Assign new properties to the avatar
   }
 }
