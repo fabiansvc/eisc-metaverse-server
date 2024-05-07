@@ -2,8 +2,8 @@
 
 import { Server } from "socket.io";
 
-const apiUrl = process.env.SERVER_URL;
-const port = process.env.PORT;
+const apiUrl = "https://eisc-metaverse.vercel.app";
+const port = 8000;
 
 const io = new Server({
   cors: {
