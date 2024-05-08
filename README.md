@@ -1,3 +1,5 @@
-Server WebSockets EISC Metaverse 
-
-Note: This Project can't be downloaded without authorization.
+# Server of the EISC Metaverse
+# Install dependencies: 
+npm install
+# Run project
+npm run dev
